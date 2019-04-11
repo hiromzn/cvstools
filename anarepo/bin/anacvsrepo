@@ -1,0 +1,34 @@
+
+TOP=`pwd`
+
+if [ ! -s "$TOP/CVSROOT.list" ]
+then
+	echo "ERROR : create $TOP/CVSROOT.list file"
+	exit 1;
+fi
+
+PATH=$TOP/bin:$PATH
+
+cat $TOP/CVSROOT.list |grep '^[0-9]' |
+while read line
+do
+	n="`echo $line |cut -d, -f1`";
+	cvsroot="`echo $line |cut -d, -f2`";
+
+	export CVSROOT=$cvsroot
+
+	id="`printf "CVSROOT_%04d" $n`";
+
+	if [ -d "$id" ]; then rm -rf $id; fi
+	mkdir $id
+	cd $id
+
+	echo "## $id : $CVSROOT"
+
+	echo "##### get module list"
+	getmodulelist >module.list
+
+	echo "##### get modules and tag sources"
+	cat module.list |getmodule
+
+done

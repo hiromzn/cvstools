@@ -1,0 +1,13 @@
+
+TMPDIR=.module_list_tmpdir
+
+if [ -d "$TMPDIR" ]; then rm -rf ./$TMPDIR; fi
+
+cvs co -l -d $TMPDIR . >/dev/null 2>&1
+
+cd $TMPDIR
+
+cvs -n up -d 2>&1 |
+    grep ': New directory ' |
+    sed 's/.*: New directory .\(.*\). -- ignored/\1/' |
+    grep -v CVSROOT

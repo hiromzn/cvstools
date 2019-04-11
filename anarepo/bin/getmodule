@@ -1,0 +1,20 @@
+
+while read module
+do
+	mkdir -p $module/.module_co
+	(
+	cd $module;
+	echo "LOG: ##### module: $module"
+	(
+	cd .module_co
+	cvs co $module 2>&1
+	    (
+	    cd $module;
+	    cvs status -v . 2>/dev/null
+	    ) | grep '^	' |
+	      	cut '-d ' -f1 |sed 's/	//' |
+	    	sort |uniq >../tag.list
+	)
+	cat tag.list |gettagsrcs $module
+	) >$module/getmodule.log
+done

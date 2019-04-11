@@ -1,0 +1,8 @@
+module="$1"
+while read tag
+do
+	echo "##### get tag source of $module:$tag"
+	cvs export -r $tag -d tagsrc.$tag $module 2>&1
+done
+echo "##### get tag source of $module:NEWER"
+cvs co -d tagsrc.NEWER $module 2>&1
